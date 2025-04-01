@@ -52,6 +52,7 @@ mymax(X,Y) when Y >= X -> Y. %% So if they are equal, just let it be
 mymin(X,Y) when X < Y -> X;
 mymin(X,Y) when X >= Y -> Y. %% So if they are equal, just let it be
 
+%% Finds the reading of particular type
 find_reading([],_) -> undefined;
 find_reading([{ReadingType,Value}|_],Type) when ReadingType =:= Type -> Value;
 find_reading([_|Rest],Type) -> find_reading(Rest,Type).
