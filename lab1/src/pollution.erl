@@ -9,7 +9,17 @@
 -module(pollution).
 -author("user").
 
--export([create_monitor/0, add_station/3, add_value/5, remove_value/4, get_one_value/4, get_station_min/3, get_over_limit/3, get_station_mean/3, get_daily_mean/3, get_nearest_stations/3]).
+-export([create_monitor/0,
+	 add_station/3,
+	 remove_station/2,
+	 add_value/5,
+	 remove_value/4, 
+	 get_one_value/4,
+	 get_station_min/3,
+	 get_over_limit/3,
+	 get_station_mean/3,
+	 get_daily_mean/3,
+	 get_nearest_stations/3]).
 
 
 % Filter matching stations by name or coordinate
@@ -33,6 +43,11 @@ add_station(Name, Coordinates, Monitor) ->
     [] -> Monitor ++ [{Name, Coordinates, []}];
     _  -> {error, "The station already exists in the dataset"}
   end.
+
+remove_station(CoordinateOrName, Monitor) ->
+  lists:filter(fun({Name, Coordinates, _}) ->
+    not (Coordinates == CoordinateOrName orelse Name == CoordinateOrName)
+  end, Monitor).
 
 % Add a reading to a station
 % Add value fail failed
@@ -74,8 +89,8 @@ get_one_value(CoordinatesOrName, Type, DateTime, Monitor) ->
     [] -> {error, "Station not found"};
     [{_, _, Values} | _] ->
       case lists:filter(fun ({ReadingType, ReadingDateTime, _}) ->
-        ReadingType == Type andalso ReadingDateTime == DateTime
-                        end, Values) of
+    			ReadingType == Type andalso ReadingDateTime == DateTime
+			end, Values)  of
         [] -> {error, "Reading not found"};
         [{_, _, Value} | _] -> Value
       end
