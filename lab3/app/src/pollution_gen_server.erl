@@ -14,7 +14,8 @@
   get_station_mean/2,
   get_daily_mean/2,
   get_nearest_stations/2,
-  get_state/0
+  get_state/0,
+  crash/0	
 ]).
 
 -export([
@@ -89,6 +90,12 @@ get_state() ->
 
 init([]) ->
   {ok, create_monitor()}.
+
+crash() -> gen_server:call(?MODULE, crash).
+
+handle_call(crash, _From, State) -> 
+	exit(panic),
+	{noreply, State};
 
 handle_call(get_state, _From, State) ->
   {reply, {ok, State}, State};
